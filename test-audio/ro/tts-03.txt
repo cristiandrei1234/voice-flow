@@ -1,0 +1,1 @@
+Te rog să verifici dacă serverul de producție a pornit după actualizarea de aseară.

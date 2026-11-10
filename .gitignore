@@ -1,0 +1,19 @@
+/target
+/models
+*.nemo
+/build
+/macos/.build
+__pycache__/
+*.pyc
+.DS_Store
+*.bak
+*.tmp
+
+# Local-only: personal recordings, personal dictionary, early prototype and planning notes
+/test-audio/ro/voce-*
+/dictionary.txt
+/prototype/
+/PLAN.md
+/scripts/get-ro-model.sh
+/scripts/bench-ro.py
+/scripts/record-ro.py

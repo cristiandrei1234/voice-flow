@@ -1,0 +1,11 @@
+[package]
+name = "vf-application"
+description = "The dictation pipeline: transcription, dictionary, corrections, formatting, delivery"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+vf-domain.workspace = true
+anyhow.workspace = true

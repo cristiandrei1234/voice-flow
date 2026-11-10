@@ -1,0 +1,12 @@
+[package]
+name = "vf-audio-cpal"
+description = "Microphone capture with cpal, converted to 16 kHz mono"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+vf-application.workspace = true
+cpal.workspace = true
+anyhow.workspace = true

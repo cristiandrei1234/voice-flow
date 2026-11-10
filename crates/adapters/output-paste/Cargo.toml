@@ -1,0 +1,13 @@
+[package]
+name = "vf-output-paste"
+description = "Text delivery: clipboard plus Cmd/Ctrl+V, restoring the clipboard afterwards"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+vf-application.workspace = true
+arboard.workspace = true
+enigo.workspace = true
+anyhow.workspace = true

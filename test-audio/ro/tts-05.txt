@@ -1,0 +1,1 @@
+Vreau să adăugăm în aplicație un buton pentru exportul rapoartelor în format PDF.

@@ -1,0 +1,36 @@
+[package]
+name = "voice-flow"
+description = "Local dictation: hold a key, speak, and the text appears at the cursor"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[[bin]]
+name = "voice-flow"
+path = "src/main.rs"
+
+[features]
+default = ["static"]
+# Biblioteci sherpa-onnx statice, descarcate automat la build (recomandat pe Mac).
+static = ["vf-asr-sherpa/static"]
+# Biblioteci dinamice din SHERPA_ONNX_LIB_DIR.
+shared = ["vf-asr-sherpa/shared"]
+
+[dependencies]
+vf-domain.workspace = true
+vf-application.workspace = true
+vf-asr-sherpa = { path = "../adapters/asr-sherpa", default-features = false }
+vf-audio-cpal.workspace = true
+vf-hotkey.workspace = true
+vf-output-paste.workspace = true
+vf-llm-openai.workspace = true
+vf-presentation.workspace = true
+slint.workspace = true
+anyhow.workspace = true
+clap.workspace = true
+dirs.workspace = true
+hound.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+ureq.workspace = true

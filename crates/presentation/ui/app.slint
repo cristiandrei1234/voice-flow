@@ -1,0 +1,100 @@
+// Voice Flow: pastila de inregistrare (stil Wispr Flow) si iconita din bara de meniu.
+
+// Starea pastilei, setata din Rust.
+export enum PillState { idle, recording, processing, error }
+
+export component Pill inherits Window {
+    title: "Voice Flow";
+    no-frame: true;
+    always-on-top: true;
+    background: transparent;
+    width: 120px;
+    height: 44px;
+
+    // Inaltimile barelor, 0.0 - 1.0, actualizate din Rust (~30 fps).
+    in property <[float]> levels: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    in property <PillState> state: PillState.idle;
+    // Mod hands-free: punct rosu in stanga.
+    in property <bool> hands-free: false;
+
+    property <bool> shown: state != PillState.idle;
+    property <length> bar-width: 3px;
+    property <length> bar-gap: 3px;
+    property <length> max-bar: 18px;
+
+    capsule := Rectangle {
+        width: 104px;
+        height: 30px;
+        x: (parent.width - self.width) / 2;
+        y: (parent.height - self.height) / 2;
+        border-radius: self.height / 2;
+        background: #000000;
+        border-width: 1.5px;
+        border-color: root.state == PillState.error ? #ff453a : #ffffff;
+        opacity: root.shown ? 1 : 0;
+        animate opacity { duration: 120ms; easing: ease-out; }
+        animate border-color { duration: 150ms; }
+
+        if root.hands-free: Rectangle {
+            x: 6px;
+            y: (parent.height - self.height) / 2;
+            width: 6px;
+            height: 6px;
+            border-radius: 3px;
+            background: #ff453a;
+        }
+
+        bars := HorizontalLayout {
+            alignment: center;
+            spacing: root.bar-gap;
+            for level[i] in root.levels: Rectangle {
+                width: root.bar-width;
+                Rectangle {
+                    width: root.bar-width;
+                    // In liniste barele devin puncte (inaltime = latime).
+                    height: max(root.bar-width, level * root.max-bar);
+                    y: (parent.height - self.height) / 2;
+                    border-radius: root.bar-width / 2;
+                    background: #ffffff;
+                    animate height { duration: 60ms; }
+                }
+            }
+        }
+    }
+}
+
+export component Tray inherits SystemTrayIcon {
+    icon: @image-url("icons/tray@2x.png");
+    tooltip: "Voice Flow";
+
+    in property <string> status: "Ready";
+    in property <string> hotkey: "Fn";
+    in property <string> engine: "Parakeet Ro";
+    in-out property <bool> cleanup: false;
+
+    callback cleanup-toggled(bool);
+    callback open-dictionary();
+    callback open-settings();
+    callback open-folder();
+    callback open-permissions();
+    callback quit();
+
+    Menu {
+        MenuItem { title: "Voice Flow: " + root.status; enabled: false; }
+        MenuItem { title: "Key: " + root.hotkey + "   ·   Engine: " + root.engine; enabled: false; }
+        MenuSeparator {}
+        MenuItem {
+            title: "Corrections with the local model";
+            checkable: true;
+            checked <=> root.cleanup;
+            activated => { root.cleanup-toggled(root.cleanup); }
+        }
+        MenuSeparator {}
+        MenuItem { title: "Open Dictionary"; activated => { root.open-dictionary(); } }
+        MenuItem { title: "Open Settings"; activated => { root.open-settings(); } }
+        MenuItem { title: "Open Project Folder"; activated => { root.open-folder(); } }
+        MenuItem { title: "Permissions (Accessibility)…"; activated => { root.open-permissions(); } }
+        MenuSeparator {}
+        MenuItem { title: "Quit"; activated => { root.quit(); } }
+    }
+}

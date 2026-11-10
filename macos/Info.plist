@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleIdentifier</key>
+    <string>com.automwise.voiceflow</string>
+    <key>CFBundleName</key>
+    <string>Voice Flow</string>
+    <key>CFBundleDisplayName</key>
+    <string>Voice Flow</string>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
+    <key>CFBundleExecutable</key>
+    <string>VoiceFlow</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>0.3.0</string>
+    <key>CFBundleVersion</key>
+    <string>3</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>14.0</string>
+    <!-- Aplicatie de bara de meniu: fara iconita in Dock. -->
+    <key>LSUIElement</key>
+    <true/>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Voice Flow listens to the microphone only while you hold the dictation key. Everything stays on your Mac.</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+</dict>
+</plist>

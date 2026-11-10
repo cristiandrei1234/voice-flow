@@ -1,0 +1,12 @@
+[package]
+name = "vf-hotkey"
+description = "Global push-to-talk key (handy-keys: Fn, modifier combinations, single keys)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+vf-domain.workspace = true
+handy-keys.workspace = true
+anyhow.workspace = true

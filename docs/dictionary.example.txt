@@ -1,0 +1,21 @@
+# Voice Flow personal dictionary (example)
+#
+# Format:  Correct form | variants the model mishears (optional, comma separated)
+#
+# - The correct form is sent to the model as a "hotword" (it pays more attention to the term)
+#   and is used for replacements and by the corrections step.
+# - The misheard variants are replaced automatically with the correct form.
+#   Don't add ordinary everyday words as variants, or they get replaced everywhere.
+#
+# You normally edit this from the app (Dictionary); the file lives at
+# ~/Library/Application Support/VoiceFlow/dictionary.txt
+
+# Technical
+Next.js | next js, nekst
+Kubernetes | cubernetis, kubernetis
+deploy | de ploi, diploi
+API | a pe i
+React
+
+# Places
+Cluj-Napoca | cluj napoca

@@ -1,0 +1,21 @@
+[package]
+name = "vf-asr-sherpa"
+description = "Local transcription with sherpa-onnx (Parakeet and Whisper models)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[features]
+# Implicit: biblioteci statice descarcate automat de sherpa-onnx-sys (pe Mac merge direct).
+default = ["static"]
+static = ["sherpa-onnx/static"]
+# Biblioteci dinamice dintr-un folder dat prin SHERPA_ONNX_LIB_DIR.
+shared = ["sherpa-onnx/shared"]
+
+[dependencies]
+vf-domain.workspace = true
+vf-application.workspace = true
+sherpa-onnx.workspace = true
+anyhow.workspace = true
+tempfile.workspace = true
