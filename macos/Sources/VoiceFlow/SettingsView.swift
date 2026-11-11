@@ -576,7 +576,7 @@ struct SettingsView: View {
         }
 
         HStack(spacing: 10) {
-            note("The correct form makes the model pay more attention to the term. Variants are what it mishears, and they're replaced automatically. Don't add ordinary everyday words as variants.")
+            note("Variants are what the model writes when it mishears the term, and they're replaced automatically. A foreign word usually needs one: the Romanian model writes “riviu” or “liviu” for “review”, so the correct form alone won't fix it. The easiest way to add them is “Fix a word” in History. Don't add ordinary everyday words as variants.")
             GlassPillButton(title: "File", icon: "doc.text") {
                 if let path = engine.settings?.dictionaryPath { openInTextEdit(path) }
             }
@@ -590,7 +590,7 @@ struct SettingsView: View {
             VStack(alignment: .leading, spacing: 7) {
                 Text(entry.correct).font(.system(size: 15, weight: .semibold))
                 if entry.aliases.isEmpty {
-                    Text("no variants: only makes the model pay more attention")
+                    Text("no variants yet: add how the model writes it when it gets it wrong")
                         .font(.caption)
                         .foregroundStyle(.white.opacity(0.45))
                 } else {

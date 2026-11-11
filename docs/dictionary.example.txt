@@ -17,5 +17,13 @@ deploy | de ploi, diploi
 API | a pe i
 React
 
+# English terms in Romanian speech (how the Romanian model writes them)
+review | riviu, reviu
+approve | apruv, aprub
+pull request | pul rechest, pul ricuest
+feedback | fidbec, fid bec
+meeting | miting
+deadline | dedlain
+
 # Places
 Cluj-Napoca | cluj napoca

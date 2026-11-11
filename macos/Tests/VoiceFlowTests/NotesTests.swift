@@ -330,3 +330,32 @@ final class NotesStoreTests: XCTestCase {
         XCTAssertEqual(try saved(in: dir.appendingPathComponent("notes")).map(\.body), ["nu ma pierde"])
     }
 }
+
+final class DictionaryTeachingTests: XCTestCase {
+    private let entries = [
+        DictEntry(line: 3, correct: "review", aliases: ["riviu"], group: "Tech"),
+        DictEntry(line: 4, correct: "NestJS", aliases: [], group: "Tech"),
+    ]
+
+    func testNormalizesTheHeardWord() {
+        XCTAssertEqual(DictionaryTeaching.normalize("Liviu."), "liviu")
+        XCTAssertEqual(DictionaryTeaching.normalize("  Colț   revis, "), "colț revis")
+    }
+
+    func testAddsAVariantToAnExistingTerm() {
+        let plan = DictionaryTeaching.plan(heard: "Liviu.", correct: "Review", entries: entries)
+        XCTAssertEqual(plan, .init(line: 3, expected: "review", correct: "review", aliases: ["riviu", "liviu"]))
+    }
+
+    func testCreatesANewTermWhenItDoesNotExist() {
+        let plan = DictionaryTeaching.plan(heard: "e pruf", correct: "approve", entries: entries)
+        XCTAssertEqual(plan, .init(line: nil, expected: "", correct: "approve", aliases: ["e pruf"]))
+    }
+
+    func testNothingToDoForKnownVariantsSameWordOrEmptyInput() {
+        XCTAssertNil(DictionaryTeaching.plan(heard: "riviu", correct: "review", entries: entries))
+        XCTAssertNil(DictionaryTeaching.plan(heard: "review", correct: "Review", entries: entries))
+        XCTAssertNil(DictionaryTeaching.plan(heard: "", correct: "review", entries: entries))
+        XCTAssertNil(DictionaryTeaching.plan(heard: "liviu", correct: "  ", entries: entries))
+    }
+}

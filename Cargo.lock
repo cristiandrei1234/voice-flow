@@ -5709,7 +5709,7 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 
 [[package]]
 name = "vf-application"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "anyhow",
  "vf-domain",
@@ -5717,7 +5717,7 @@ dependencies = [
 
 [[package]]
 name = "vf-asr-sherpa"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "anyhow",
  "sherpa-onnx",
@@ -5728,7 +5728,7 @@ dependencies = [
 
 [[package]]
 name = "vf-audio-cpal"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "anyhow",
  "cpal",
@@ -5737,7 +5737,7 @@ dependencies = [
 
 [[package]]
 name = "vf-domain"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "regex",
  "serde",
@@ -5749,7 +5749,7 @@ dependencies = [
 
 [[package]]
 name = "vf-hotkey"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "anyhow",
  "handy-keys",
@@ -5758,7 +5758,7 @@ dependencies = [
 
 [[package]]
 name = "vf-llm-openai"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "anyhow",
  "serde_json",
@@ -5769,7 +5769,7 @@ dependencies = [
 
 [[package]]
 name = "vf-output-paste"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "anyhow",
  "arboard",
@@ -5779,7 +5779,7 @@ dependencies = [
 
 [[package]]
 name = "vf-presentation"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "png 0.17.16",
  "slint",
@@ -5788,7 +5788,7 @@ dependencies = [
 
 [[package]]
 name = "voice-flow"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "anyhow",
  "clap",

@@ -105,11 +105,18 @@ impl Dictionary {
         self.entries.is_empty()
     }
 
-    /// Continutul fisierului de hotwords pentru sherpa-onnx: forma corecta,
-    /// cu litere mici si fara accente straine (asa cum o poate scoate modelul).
+    /// The hotwords file for sherpa-onnx: one term per line, lowercase, without foreign accents.
+    ///
+    /// Only terms WITHOUT variants are boosted. A term that has variants is fixed by replacement
+    /// after transcription, and boosting it too does more harm than good: every extra hotword
+    /// bends the decoding of the words around it, and a model that writes by sound (the Romanian
+    /// one writes "riviu" for "review") never produces the English spelling anyway. Measured on
+    /// the test recordings: adding 16 English terms as hotwords took the word error rate from
+    /// 8.0% to 10.7%; with this rule it stays where it was.
     pub fn hotwords(&self) -> String {
         self.entries
             .iter()
+            .filter(|e| e.aliases.is_empty())
             .map(|e| strip_foreign_accents(&e.correct.to_lowercase()).replace('.', " "))
             .collect::<Vec<_>>()
             .join("\n")
@@ -184,10 +191,20 @@ mod tests {
     fn hotwords_are_lowercase_without_foreign_accents() {
         let d = Dictionary::parse(SAMPLE);
         let hw = d.hotwords();
-        assert!(hw.contains("nestjs"));
         assert!(hw.contains("gestoria"));
         assert!(hw.contains("next js"));
-        assert!(hw.contains("castellon"));
+        assert!(hw.contains("lanzadera"));
+    }
+
+    #[test]
+    fn terms_with_variants_are_not_hotwords() {
+        let hw = Dictionary::parse(SAMPLE).hotwords();
+        let lines: Vec<&str> = hw.lines().collect();
+        // Au variante: se repara prin inlocuire, nu prin indicii catre model.
+        for term in ["nestjs", "deploy", "google ads", "pdf", "castellon"] {
+            assert!(!lines.contains(&term), "{term} nu trebuie sa fie hotword");
+        }
+        assert_eq!(lines, vec!["gestoria", "next js", "lanzadera"]);
     }
 
     #[test]

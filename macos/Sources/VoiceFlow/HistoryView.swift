@@ -252,9 +252,25 @@ private struct HistoryCard: View {
     let item: HistoryItem
     let onCopy: () -> Void
     let onDelete: () -> Void
+    @Environment(Engine.self) private var engine
     @State private var expanded = false
     @State private var showRaw = false
     @State private var copied = false
+    /// "Fix a word": the words picked from this dictation and what they should have been.
+    @State private var fixing = false
+    @State private var picked: Set<Int> = []
+    @State private var shouldBe = ""
+    @State private var taught: String?
+
+    private var words: [String] { item.text.split(whereSeparator: \.isWhitespace).map(String.init) }
+
+    private var heard: String {
+        DictionaryTeaching.normalize(picked.sorted().map { words[$0] }.joined(separator: " "))
+    }
+
+    private var fixPlan: DictionaryTeaching.Plan? {
+        DictionaryTeaching.plan(heard: heard, correct: shouldBe, entries: engine.dictEntries)
+    }
 
     /// Aproximare pentru "nu incape in 4 randuri": arata butonul de extindere.
     private var isLong: Bool {
@@ -291,6 +307,14 @@ private struct HistoryCard: View {
                 .background(.black.opacity(0.25), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
             }
 
+            if fixing { fixPanel }
+            if let taught {
+                Label(taught, systemImage: "checkmark.circle.fill")
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(.green)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
             HStack(spacing: 10) {
                 Text(meta)
                     .font(.caption)
@@ -302,6 +326,12 @@ private struct HistoryCard: View {
                 if item.hasDifferentRaw {
                     linkButton(showRaw ? "Hide raw text" : "Raw text") { showRaw.toggle() }
                 }
+                linkButton(fixing ? "Cancel fix" : "Fix a word") {
+                    fixing.toggle()
+                    picked = []
+                    shouldBe = ""
+                    taught = nil
+                }
                 Spacer(minLength: 8)
                 GlassIconButton(systemName: "trash", size: 30, help: "Delete from history", action: onDelete)
                 GlassPillButton(title: copied ? "Copied" : "Copy", icon: copied ? "checkmark" : "doc.on.doc") {
@@ -312,6 +342,52 @@ private struct HistoryCard: View {
             }
         }
         .glassCard(radius: 16, padding: 12)
+    }
+
+    /// Pick the misheard word(s), type what they should be, and the dictionary learns the pair.
+    private var fixPanel: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            FieldLabel("Click the word (or words) that came out wrong")
+            ChipFlow(spacing: 6) {
+                ForEach(Array(words.enumerated()), id: \.offset) { index, word in
+                    let on = picked.contains(index)
+                    Button {
+                        if on { picked.remove(index) } else { picked.insert(index) }
+                    } label: {
+                        Text(word)
+                            .font(.system(size: 12.5, weight: on ? .semibold : .regular))
+                            .foregroundStyle(on ? Color.black : .white.opacity(0.85))
+                            .padding(.horizontal, 9)
+                            .frame(height: 24)
+                            .background(on ? Color.white : .white.opacity(0.1), in: Capsule())
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            if !heard.isEmpty {
+                FieldLabel("“\(heard)” should be written as")
+                HStack(spacing: 10) {
+                    GlassField(placeholder: "e.g. review", text: $shouldBe, onSubmit: teach)
+                    GlassPillButton(title: "Teach", icon: "checkmark", prominent: true, action: teach)
+                        .disabled(fixPlan == nil)
+                        .opacity(fixPlan == nil ? 0.45 : 1)
+                }
+                NoteText("From now on “\(heard)” is replaced everywhere, so only teach words you never mean literally. You can undo it in Dictionary.")
+            }
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.black.opacity(0.25), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+    }
+
+    private func teach() {
+        guard let plan = fixPlan else { return }
+        engine.lastError = nil
+        engine.saveEntry(line: plan.line, expected: plan.expected, correct: plan.correct, aliases: plan.aliases, group: nil)
+        taught = "Learned: “\(heard)” is now written “\(plan.correct)”."
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.85)) { fixing = false }
+        picked = []
+        shouldBe = ""
     }
 
     private func linkButton(_ title: String, action: @escaping () -> Void) -> some View {

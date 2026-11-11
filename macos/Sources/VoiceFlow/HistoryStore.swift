@@ -223,3 +223,37 @@ final class HistoryStore {
         return try? decoder.decode(T.self, from: data)
     }
 }
+
+
+/// "Teach a word": turns a misheard word from a past dictation into a dictionary variant.
+enum DictionaryTeaching {
+    struct Plan: Equatable {
+        /// Line of the existing term to extend, or nil to add a new term.
+        var line: Int?
+        var expected: String
+        var correct: String
+        var aliases: [String]
+    }
+
+    /// Lowercased, without punctuation at the ends: "Liviu." -> "liviu".
+    static func normalize(_ heard: String) -> String {
+        heard.split(whereSeparator: \.isWhitespace)
+            .map { $0.trimmingCharacters(in: .punctuationCharacters.union(.symbols)) }
+            .filter { !$0.isEmpty }
+            .joined(separator: " ")
+            .lowercased()
+    }
+
+    /// What to save so that `heard` is written as `correct` from now on; nil when there is nothing to do.
+    static func plan(heard: String, correct: String, entries: [DictEntry]) -> Plan? {
+        let heard = normalize(heard)
+        let correct = correct.split(whereSeparator: \.isWhitespace).joined(separator: " ")
+        guard !heard.isEmpty, !correct.isEmpty, heard != correct.lowercased() else { return nil }
+        if let existing = entries.first(where: { $0.correct.lowercased() == correct.lowercased() }) {
+            if existing.aliases.contains(where: { $0.lowercased() == heard }) { return nil }
+            return Plan(line: existing.line, expected: existing.correct, correct: existing.correct,
+                        aliases: existing.aliases + [heard])
+        }
+        return Plan(line: nil, expected: "", correct: correct, aliases: [heard])
+    }
+}
